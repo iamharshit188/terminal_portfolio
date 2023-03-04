@@ -1,2 +1,1 @@
-# Portfolio_for_linux_geeks
-An awesome way of creating Portfolio especially for Linux Geeks...
+ A simple yet unique portfolio inspired by cmatrix and bash shell.
