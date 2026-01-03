@@ -94,20 +94,10 @@
     setTimeout(() => {
       bootEl.style.display = 'none';
       // Initialize terminal after boot
-      initializeTerminal();
+      if (window.Terminal) {
+        window.terminalInstance = new window.Terminal();
+      }
     }, 3000);
   }
 })();
-
-// Initialize Terminal
-function initializeTerminal() {
-  // Load the terminal script
-  const script = document.createElement('script');
-  script.src = 'assets/js/terminal.js';
-  script.onload = function() {
-    // Create terminal instance
-    window.terminalInstance = new window.Terminal();
-  };
-  document.body.appendChild(script);
-}
 

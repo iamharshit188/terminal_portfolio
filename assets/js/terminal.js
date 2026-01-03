@@ -5,6 +5,7 @@ class Terminal {
     this.currentDirectory = '~';
     this.commandHistory = [];
     this.historyIndex = -1;
+    this.startTime = Date.now(); // Store initialization time
     this.fileSystem = {
       '~': {
         'About_Me': {
@@ -449,9 +450,8 @@ Visit my <a href="${this.userData.github}" target="_blank" rel="noopener norefer
   }
 
   getUptime() {
-    const start = new Date(document.timeline?.currentTime || Date.now());
-    const now = new Date();
-    const diff = Math.floor((now - start) / 1000);
+    const now = Date.now();
+    const diff = Math.floor((now - this.startTime) / 1000);
     const minutes = Math.floor(diff / 60);
     const seconds = diff % 60;
     return `${minutes}m ${seconds}s`;
