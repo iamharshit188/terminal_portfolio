@@ -434,17 +434,241 @@ span[style*="border"] {
   }
 }
 
+/* Dock Styles */
+#dock-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  perspective: 1000px;
+}
+
+#dock {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(0, 255, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#dock:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 12px 48px rgba(0, 0, 0, 0.4),
+    0 0 60px rgba(0, 255, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.dock-item {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 255, 0, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  color: #00ff00;
+  box-shadow: 0 4px 12px rgba(0, 255, 0, 0.2);
+}
+
+.dock-item svg {
+  width: 28px;
+  height: 28px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 0 5px rgba(0, 255, 0, 0.5));
+}
+
+.dock-item:hover {
+  transform: translateY(-20px) scale(1.3);
+  background: rgba(0, 255, 0, 0.2);
+  box-shadow: 
+    0 8px 24px rgba(0, 255, 0, 0.4),
+    0 0 30px rgba(0, 255, 0, 0.3);
+}
+
+.dock-item:hover svg {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 10px rgba(0, 255, 0, 0.8));
+}
+
+.dock-item::before {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  background: rgba(0, 0, 0, 0.9);
+  color: #00ff00;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  border: 1px solid #00ff00;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.dock-item:hover::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-15px);
+}
+
+/* CLI Input Styles */
+.input-line {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.input-prompt {
+  color: #00ff00;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+
+#command-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #00ff00;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: clamp(12px, 2vw, 14px);
+  flex: 1;
+  caret-color: #00ff00;
+}
+
+#command-input::selection {
+  background: rgba(0, 255, 0, 0.3);
+}
+
+.output-line {
+  margin: 5px 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.error {
+  color: #ff0844;
+}
+
+.success {
+  color: #00ff00;
+}
+
+.info {
+  color: #00a3cc;
+}
+
+.warning {
+  color: #ffff00;
+}
+
+/* Neofetch ASCII Art */
+.neofetch-container {
+  display: flex;
+  gap: 30px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.neofetch-logo {
+  color: #00ff00;
+  font-family: monospace;
+  white-space: pre;
+  line-height: 1.2;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+.neofetch-info {
+  flex: 1;
+  min-width: 300px;
+}
+
+.neofetch-info div {
+  margin: 4px 0;
+}
+
+.neofetch-label {
+  color: #00ff00;
+  font-weight: bold;
+}
+
+.neofetch-value {
+  color: #ffffff;
+}
+
+/* Blink cursor for input */
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
 /* Print Styles */
 @media print {
   #matrix-canvas,
   .crt-overlay,
   .scanlines,
-  #boot-sequence {
+  #boot-sequence,
+  #dock-container {
     display: none;
   }
   
   #console {
     border: 1px solid #000;
     box-shadow: none;
+  }
+}
+
+/* Mobile dock adjustments */
+@media (max-width: 768px) {
+  #dock-container {
+    bottom: 10px;
+  }
+  
+  #dock {
+    gap: 8px;
+    padding: 6px 12px;
+  }
+  
+  .dock-item {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .dock-item svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .dock-item:hover {
+    transform: translateY(-15px) scale(1.2);
+  }
+}
+
+@media (max-width: 480px) {
+  .dock-item {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .dock-item svg {
+    width: 20px;
+    height: 20px;
   }
 }
