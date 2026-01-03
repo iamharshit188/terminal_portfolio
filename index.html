@@ -1,17 +1,46 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <title>Harshit Tiwari - Resume</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="description" content="Harshit Tiwari - Terminal Portfolio - A hacker-style terminal interface">
+  <meta name="theme-color" content="#000000">
+  <title>Harshit Tiwari - Terminal Portfolio</title>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
   <link rel="stylesheet" type="text/css" href="assets/css/index.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
-  <script type="text/javascript" src="assets/js/index.js">
-  </script>
-  <div id="console"></div>
-  </script>
+  <!-- Matrix rain background -->
+  <canvas id="matrix-canvas"></canvas>
+  
+  <!-- CRT overlay effects -->
+  <div class="crt-overlay"></div>
+  <div class="scanlines"></div>
+  
+  <!-- Boot sequence -->
+  <div id="boot-sequence">
+    <div class="boot-text">SYSTEM INITIALIZING...</div>
+    <div class="boot-progress">
+      <div class="boot-progress-bar"></div>
+    </div>
+  </div>
+  
+  <!-- Main terminal container -->
+  <div id="terminal-container">
+    <div id="terminal-header">
+      <div class="terminal-buttons">
+        <span class="terminal-button close"></span>
+        <span class="terminal-button minimize"></span>
+        <span class="terminal-button maximize"></span>
+      </div>
+      <div class="terminal-title">harshit@terminal:~</div>
+    </div>
+    <div id="console"></div>
+  </div>
+  
+  <script type="text/javascript" src="assets/js/index.js"></script>
 </body>
 
 </html>
