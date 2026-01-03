@@ -55,7 +55,7 @@
   }
 })();
 
-// Enhanced Typer with better performance and stability
+// Enhanced Typer with vanilla JavaScript (no jQuery dependency)
 var Typer = {
   text: "",
   accessCountimer: null,
@@ -64,29 +64,36 @@ var Typer = {
   file: "",
   accessCount: 0,
   deniedCount: 0,
+  consoleElement: null,
   
   init: function () {
+    this.consoleElement = document.getElementById('console');
+    
     // Update cursor animation
     this.accessCountimer = setInterval(function () {
       Typer.updLstChr();
     }, 500);
     
-    // Load content
-    $.get(Typer.file, function (data) {
-      Typer.text = data;
-      Typer.text = Typer.text.slice(0, Typer.text.length - 1);
-    }).fail(function() {
-      console.error('Failed to load content file');
-      Typer.text = '<span id="b">Error: Could not load portfolio content.</span>';
-    });
+    // Load content using fetch API
+    fetch(this.file)
+      .then(response => response.text())
+      .then(data => {
+        Typer.text = data.slice(0, data.length - 1);
+      })
+      .catch(error => {
+        console.error('Failed to load content file:', error);
+        Typer.text = '<span id="b">Error: Could not load portfolio content.</span>';
+      });
   },
 
   content: function () {
-    return $("#console").html();
+    return this.consoleElement ? this.consoleElement.innerHTML : "";
   },
 
   write: function (str) {
-    $("#console").append(str);
+    if (this.consoleElement) {
+      this.consoleElement.innerHTML += str;
+    }
     return false;
   },
 
@@ -95,25 +102,23 @@ var Typer = {
     if (key.keyCode == 18) {
       Typer.accessCount++;
       if (Typer.accessCount >= 3) {
-        Typer.makeAccess();
+        Typer.makeAccess && Typer.makeAccess();
       }
     } else if (key.keyCode == 20) {
       Typer.deniedCount++;
       if (Typer.deniedCount >= 3) {
-        Typer.makeDenied();
+        Typer.makeDenied && Typer.makeDenied();
       }
     } else if (key.keyCode == 27) {
-      Typer.hidepop();
+      Typer.hidepop && Typer.hidepop();
     } else if (Typer.text) {
       var cont = Typer.content();
       
       // Remove cursor if present
       if (cont.substring(cont.length - 1, cont.length) == "|") {
-        $("#console").html(
-          $("#console")
-            .html()
-            .substring(0, cont.length - 1)
-        );
+        if (Typer.consoleElement) {
+          Typer.consoleElement.innerHTML = cont.substring(0, cont.length - 1);
+        }
       }
       
       // Handle backspace
@@ -127,7 +132,9 @@ var Typer = {
       var text = Typer.text.substring(0, Typer.index);
       var rtn = new RegExp("\n", "g");
       
-      $("#console").html(text.replace(rtn, "<br/>"));
+      if (Typer.consoleElement) {
+        Typer.consoleElement.innerHTML = text.replace(rtn, "<br/>");
+      }
       
       // Smooth scroll
       window.scrollBy({
@@ -150,11 +157,9 @@ var Typer = {
     var cont = this.content();
 
     if (cont.substring(cont.length - 1, cont.length) == "|") {
-      $("#console").html(
-        $("#console")
-          .html()
-          .substring(0, cont.length - 1)
-      );
+      if (this.consoleElement) {
+        this.consoleElement.innerHTML = cont.substring(0, cont.length - 1);
+      }
     } else {
       this.write("|");
     }
@@ -174,55 +179,56 @@ function replaceUrls(text) {
   }
 }
 
-// Initialize Typer
-Typer.speed = 3;
-Typer.file = "rimijoker.html";
-Typer.init();
-
-// Auto-typing with better performance
-var timer = setInterval(function() {
-  Typer.addText({ keyCode: 123748 });
-
-  if (Typer.index > Typer.text.length) {
-    clearInterval(timer);
-  }
-}, 30);
-
-// Keyboard event listener for manual typing (optional)
-document.addEventListener('keydown', function(e) {
-  // Allow F11 for fullscreen
-  if (e.keyCode === 122) return;
-  
-  // Alt key for access
-  if (e.keyCode === 18) {
-    Typer.addText(e);
-  }
-});
-
-// Handle window resize for better responsiveness
-var resizeTimer;
-window.addEventListener('resize', function() {
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(function() {
-    // Adjust font size or layout if needed
-    console.log('Window resized');
-  }, 250);
-});
-
-// Smooth scrolling to bottom
-function scrollToBottom() {
-  window.scrollTo({
-    top: document.body.scrollHeight,
-    behavior: 'smooth'
-  });
+// Wait for DOM to be ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initTyper);
+} else {
+  initTyper();
 }
 
-// Performance optimization - Remove cursor blinking when typing is complete
-setTimeout(function() {
-  var checkComplete = setInterval(function() {
-    if (Typer.index >= Typer.text.length) {
-      clearInterval(checkComplete);
-      // Keep the cursor visible but static
+function initTyper() {
+  // Initialize Typer
+  Typer.speed = 3;
+  Typer.file = "rimijoker.html";
+  Typer.init();
+
+  // Auto-typing with better performance
+  var timer = setInterval(function() {
+    Typer.addText({ keyCode: 123748 });
+
+    if (Typer.index > Typer.text.length) {
+      clearInterval(timer);
     }
-  }, 100);
-}, 3000);
+  }, 30);
+
+  // Keyboard event listener for manual typing (optional)
+  document.addEventListener('keydown', function(e) {
+    // Allow F11 for fullscreen
+    if (e.keyCode === 122) return;
+    
+    // Alt key for access
+    if (e.keyCode === 18) {
+      Typer.addText(e);
+    }
+  });
+
+  // Handle window resize for better responsiveness
+  var resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      // Adjust font size or layout if needed
+      console.log('Window resized');
+    }, 250);
+  });
+
+  // Performance optimization - Remove cursor blinking when typing is complete
+  setTimeout(function() {
+    var checkComplete = setInterval(function() {
+      if (Typer.index >= Typer.text.length) {
+        clearInterval(checkComplete);
+        // Keep the cursor visible but static
+      }
+    }, 100);
+  }, 3000);
+}
