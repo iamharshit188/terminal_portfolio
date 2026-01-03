@@ -5,21 +5,24 @@
   
   const ctx = canvas.getContext('2d');
   
-  // Set canvas size
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
-  
   // Matrix characters
   const chars = 'アィイウェエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const charArray = chars.split('');
   
   const fontSize = 14;
-  const columns = Math.floor(canvas.width / fontSize);
-  const drops = Array(columns).fill(1);
+  let columns = Math.floor(canvas.width / fontSize);
+  let drops = Array(columns).fill(1);
+  
+  // Set canvas size
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    // Recalculate columns and drops when resized
+    columns = Math.floor(canvas.width / fontSize);
+    drops = Array(columns).fill(1);
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
   
   function draw() {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
@@ -217,8 +220,7 @@ function initTyper() {
   window.addEventListener('resize', function() {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function() {
-      // Adjust font size or layout if needed
-      console.log('Window resized');
+      // Layout adjusted automatically via CSS
     }, 250);
   });
 
